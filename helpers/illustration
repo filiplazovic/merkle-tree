@@ -1,0 +1,64 @@
+             H(ABCDEFGH)
+           /           \
+          /                \
+         /                     \
+      H(ABCD)                  H(EFGH)
+      /     \                 |     \
+     /       \                |        \
+    /         \               |           \
+  H(AB)      H(CD)          H(EF)         H(GH)
+  /  \       /   \          /   \         |    \
+ /    \     /     \        /     \        |     \
+/      \   /       \      /       \       |      \
+H(A)  H(B) H(C)    H(D)  H(E)    H(F)    H(G)    H(H)
+ |     |    |       |     |       |       |       |
+ "a"  "b"  "c"     "d"   "e"     "f"     "g"     "h"
+
+A: 0x3ac225168df54212a25c1c01fd35bebfea408fdac2e31ddd6f80a4bbf9a5f1cb,
+B: 0xb5553de315e0edf504d9150af82dafa5c4667fa618ed0a6f19c69b41166c5510
+
+AB: 0x805b21d846b189efaeb0377d6bb0d201b3872a363e607c25088f025b0c6ae1f8
+
+C: 0x0b42b6393c1f53060fe3ddbfcd7aadcca894465a5a438f69c87d790b2299b9b2
+
+C1: 0x05098bd04354a2fc3a93037c505c12d75216a5b8e8b2700782de9617154c2bca
+
+ABC1: 0x20254728434d62cb9ac78febaf09f70d019d0fc01fa71644c3df9944f67b40bf
+
+D: 0xf1918e8562236eb17adc8502332f4c9c82bc14e19bfc0aa10ab674ff75b3d2f3
+
+CD: 0xd253a52d4cb00de2895e85f2529e2976e6aaaa5c18106b68ab66813e14415669
+
+ABCD: 0x68203f90e9d07dc5859259d7536e87a6ba9d345f2552b5b9de2999ddce9ce1bf
+
+E: 0xa8982c89d80987fb9a510e25981ee9170206be21af3c8e0eb312ef1d3382e761
+
+E1: 0x1f1f158e1cf921d82112c89c50778e37ba1a459656b83e00841e6e2a101b2d86
+
+E2: 0x3d1ea86e87ee8c22f2fde594f6c4cd87cbe0eb34f72dafd38faed3e23fc1d570
+
+ABCDE2: 0xe06b91734194dcf6c5ceb5a153ea49a1a778a0d9c05f250e93509da53b7307df
+
+F: 0xd1e8aeb79500496ef3dc2e57ba746a8315d048b7a664a2bf948db4fa91960483
+
+EF: 0xf0b49bb4b0d9396e0315755ceafaa280707b32e75e6c9053f5cdf2679dcd5c6a
+
+EF1: 0xe0fa74549986e2a119d9bb4980ad6ea3feb3756fa6f402c4978a16401e5a3e72
+
+ABCDEF1: 0xa1c324a12d6e5c441013c2675a77bacb6f6c6847300736d93e0345f2cab43f75
+
+G: 0x14bcc435f49d130d189737f9762feb25c44ef5b886bef833e31a702af6be4748
+
+G1: 0x7c4434aa3ab990c4292e7bb083a24631ca5cb1307498dc52daa717917b969645
+
+EFG1: 0x27388dc720fab7b3f98d9d48c2a822f9175f2503c17b77383b4503ecc33667ea
+
+ABCDEFG1: 0x6eb756fcfb016d54e173108a4649aa7a402ef1442eaa73c2aeeca53577d192b8
+
+H: 0xa766932420cc6e9072394bef2c036ad8972c44696fee29397bd5e2c06001f615
+
+GH: 0xe18a5c2ee5202ecdefed683f03145b1343304dbed01aecb94032b7f801844f0a
+
+EFGH: 0xf313fc9eb1c4864b1b8e78296656fb7831cc0ed46361bf3452db1c4cec430050
+
+ABCDEFGH: 0xcd07272f4955ddcfdac38ff36dff9d3e4353498923679ab548ba87e34648e4a3
