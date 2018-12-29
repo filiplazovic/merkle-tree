@@ -1,0 +1,91 @@
+                        ABCDEFGHIJKL1
+                      /               \
+              ABCDEFGH                 IJKL1
+            /          \                 |
+       ABCD             EFGH            IJKL
+      /    \           /    \          /    \
+    AB      CD       EF      GH      IJ      KL
+   /  \     / \     / \     / \      / \     / \
+  A    B   C   D   E   F   G   H    I   J   K   L
+  |    |   |   |   |   |   |   |    |   |   |   |
+ "a"   4  "c"  7  "e"  8  "g"  9   "i"  10 "k"  11
+
+insert 1:
+
+A: 0x294587bf977c4010a60dbad811c63531f90f6ec512975bc6c9a93f8f361cad72
+B: 0x8a35acfbc15ff81a39ae7d344fd709f28e8600b4aa8c65c6b64bfe7fe36bd19b
+
+AB: 0xf7942bc2d05a2f7d386a1116c9e29ff42401ba8753df2f68717075a2e4361d6f
+
+edges-for-next-insert: [0, AB]
+
+
+insert 2:
+
+C: 0xd4ada26d51e415c51828a982c1cb067b85d0ac04798c4192814caa61b3fb5451
+D: 0xa66cc928b5edb82af9bd49922954155ab7b0942694bea4ce44661d9a8736c688
+
+CD: 0x153f710f6afd886d8e92a062ae8c930cc3d694bf7831dd89bf26827313b442d0
+
+ABCD: 0xf803c193aca6226e321d23dce8e349d030f89bf9aa0e1c134e613168ef398f1c
+
+edges-for-next-insert: [0, 0, ABCD]
+
+
+insert 3:
+
+E: 0xbba68da7535162a664199ce26aaa7120e34d067680c3de5c0dd21a4708bddd54
+F: 0xf3f7a9fe364faab93b216da50a3214154f22a0a2b415b23a84c8169e8b636ee3
+
+EF: 0xa26e89ef6eb9e27c099bfa7a906b238542df115d015ec7e9a6a5a78cf44dfded
+
+EF1: 0xbe4f5b39f8e523a56e5088aaf568ca7f58ccbd788b09d24dda3041d4c02d30d2
+
+ABCDEF1: 0xa9e7acb4a000647dadba6fcebdb4f5de52ed6f803745e2f8ce8d9b0c285c3fa9
+
+edges-for-next-insert: [0, EF, ABCD]
+
+
+insert 4:
+
+G: 0x13b20b9cf24cb205cd8cc90a47ccf37879353e26ac61840973b1a4593fae1516
+H: 0x6e1540171b6c0c960b71a7020d9f60077f6af931a8bbf590da0223dacf75c7af
+
+GH: 0xca4618b720edde572cc9effb349875ff85f43cf94f92fc1568defae1a8601cf3
+
+EFGH: 0xd2576e5d1e9091d46720e05cd683094a120239180637439006328b93a6ec2f9d
+
+ABCDEFGH: 0xd1c6a197bc1b75e40f4705b2651b90499c19b9c5446713ab6284707012ef94c7
+
+edges-for-next-insert: [0, 0, 0, ABCDEFGH]
+
+
+insert 5:
+
+I: 0x01437fe8a60894fdd56c83bc399003b86bd0cd4acd895b2f4fc9c7fb5b8511ea
+J: 0xc65a7bb8d6351c1cf70c95a316cc6a92839c986682d98bc35f958f4883f9d2a8
+
+IJ: 0x7527ad7ca22869804765586a799f44782f0895b82eb0670e8f7fcc20dcbfd4c9
+
+IJ1: 0x79e341c8815ed0ff594088f581fe47671dc794e3262042030706243931b79994
+IJ2: 0x3aa3b4d0a2553bc265e34e7291c45112151f11202032c568fc2c27c99c39a1a6
+
+ABCDEFGHIJ2: 0x99d217a6786795ee2bebbb3497f64aba453b14b27220eb38f06933a61539f083
+
+edges-for-next-insert: [0, IJ, 0, ABCDEFGH]
+
+
+insert 6:
+
+K: 0x395664e6de55b9e55b0753d31057a0a654c04e05ada011cdf65abb44f39777a7
+L: 0x0175b7a638427703f0dbe7bb9bbf987a2551717b34e79f33b5b1008d1fa01db9
+
+KL: 0x10c6e9812c0407f504f6c30d23fdc025714b6d90cd54e6f38ef1bfaa04bcc056
+
+IJKL: 0xc34f0a14038f9dcff54375587ffb06cdfca83cc3c49b44215fb5fdd77bfcd743
+
+IJKL1: 0x020e5b4b75b858307678013de3db68dea1e6142e3615350f1214a591d85525d1
+
+ABCDEFGHIJKL1: 0x4ea19d06eedc1c721ad6178a60e592bac8fcf6d9630f103253851b4c6bf91e85
+
+edges-for-next-insert: [0, 0, IJKL, ABCDEFGH]

@@ -11,7 +11,6 @@ contract TokenLockingWithTimestamp {
   function depositAndLock(uint256 _amount, uint256 _timestamp) public payable {
     require(msg.value >= 1 ether, "invalid-value");
     require(locks[msg.sender].amount == 0, "stake-already-deposited");
-    // TODO Add checks for overflow
     locks[msg.sender] = Lock(_amount, _timestamp);
   }
 
