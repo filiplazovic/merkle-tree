@@ -8,11 +8,14 @@ class MerkleTree {
     this.contract = contractInstance;
   }
 
-  async insert(value, salt) {
-    value = toHex(value);
-    const tx = await this.contract.insert(value, salt);
-    const valueHash = soliditySha3(padRight(value, 64));
+  async insert(value, salt, insertOnChain = false) {
+    const valueHash = soliditySha3(padRight(toHex(value), 64));
     const saltHash = soliditySha3(salt);
+
+    if (insertOnChain) {
+      await this.contract.insert(valueHash, saltHash);
+    }
+
     const parentHash = soliditySha3(valueHash, saltHash);
     this.tree[parentHash] = {
       children: [valueHash, saltHash]
@@ -43,6 +46,11 @@ class MerkleTree {
 
     proof.push(node.sibling);
     let parentHash = node.parent;
+
+    if (parentHash == rootHash) {
+      return proof;
+    }
+
     while (true) {
       const parentSiblingHash = this.tree[parentHash].sibling;
       proof.push(parentSiblingHash);

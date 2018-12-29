@@ -1,59 +1,73 @@
 pragma solidity ^0.5.1;
 
-import "./TokenLocking/TokenLockingWithCount.sol";
+import "./TokenLocking/TokenLockingWithTimestamp.sol";
 import "./Merkle/MerkleTree.sol";
 
-contract Voting is TokenLockingWithCount, MerkleTree {
+contract Voting is TokenLockingWithTimestamp, MerkleTree {
     uint256 voteDeadline;
     uint256 revealPeriod;
-    bytes32[] voteOptions;
-    mapping(bytes32 => uint256) voteCount;
-    mapping(bytes32 => bool) secrets;
+    uint256 numOptions;
+    mapping(uint256 => uint256) voteCount;
 
     modifier voteNotStarted() {
       require(voteDeadline == 0, "vote-already-started");
       _;
     }
 
-    modifier voteRunning() {
-      require(block.timestamp < voteDeadline, "vote-not-running");
+    modifier validOption(uint256 _optionIndex) {
+      require(_optionIndex <= numOptions, "invalid-option");
       _;
     }
 
-    modifier voteFinished() {
-      require(block.timestamp >= voteDeadline, "vote-not-finished");
+    modifier voteRunning() {
+      require(block.timestamp <= voteDeadline, "vote-not-running");
       _;
     }
 
     modifier isRevealPeriod() {
+      require(block.timestamp > voteDeadline, "vote-not-finished");
       require(voteDeadline + revealPeriod > block.timestamp, "not-in-reveal-period");
       _;
     }
 
-    function addOption(bytes32 _description) public voteNotStarted {
-      // TODO make sure we cant add 2 same options
-      voteOptions.push(_description);
-    }
-
-    function startVote(uint256 _deadline, uint256 _revealPeriod) public voteNotStarted {
-      require(voteOptions.length > 1, "invalid-number-of-options");
+    function startVote(uint256 _deadline, uint256 _revealPeriod, uint256 _numOptions) public voteNotStarted {
+      require(_numOptions > 1, "invalid-number-of-options");
       voteDeadline = _deadline;
       revealPeriod = _revealPeriod;
-      lockAllDeposits();
+      numOptions = _numOptions;
     }
 
-    function submitSecret(bytes32 _value, uint256 _salt) public voteRunning {
-      require(isUserEligable(msg.sender), "user-not-eligable");
-      insert(_value, _salt);
+    function submitSecret(bytes32 _valueHash, uint256 _saltHash) public payable voteRunning {
+      require(msg.value >= 1 ether, "invalid-value");
+
+      bytes32 firstLevelHash = keccak256(abi.encodePacked(_valueHash, _saltHash));
+
+      depositAndLock(msg.value, firstLevelHash);
+      insertFirstLevelHash(firstLevelHash);
     }
 
-    function revealSecret(bytes32 _option, bytes32 _rootHash, bytes32 _valueHash, bytes32[] memory _siblings) public isRevealPeriod {
-      verifyProof(_rootHash, _valueHash, _siblings);
-      voteCount[_option] += 1;
-      unlockUserDeposit(msg.sender);
+    function revealSecret(uint256 _optionIndex, bytes32 _valueHash, bytes32[] memory _siblings) public
+    isRevealPeriod
+    validOption(_optionIndex)
+    {
+      verifyProof(rootHash, _valueHash, _siblings);
+      voteCount[_optionIndex] += 1;
+      unlockAndWithdraw(msg.sender, keccak256(abi.encodePacked(_valueHash, _siblings[0])));
     }
 
     function getNumberOfVotesFor(uint256 _optionIndex) public view returns (uint256) {
-      return voteCount[voteOptions[_optionIndex]];
+      return voteCount[_optionIndex];
+    }
+
+    function getNumberOfOptions() public view returns (uint256) {
+      return numOptions;
+    }
+
+    function getVoteDeadline() public view returns (uint256) {
+      return voteDeadline;
+    }
+
+    function getRevealPeriodLength() public view returns (uint256) {
+      return revealPeriod;
     }
 }

@@ -1,23 +1,20 @@
 pragma solidity ^0.5.1;
 
 contract TokenLockingWithTimestamp {
-  struct Lock {
-    uint256 amount;
-    uint256 timestamp;
+  mapping (bytes32 => uint256) locks;
+
+  function depositAndLock(uint256 _amount, bytes32 _secretHash) internal {
+    require(locks[_secretHash] == 0, "stake-already-deposited");
+    locks[_secretHash] = _amount;
   }
 
-  mapping (address => Lock) locks;
-
-  function depositAndLock(uint256 _amount, uint256 _timestamp) public payable {
-    require(msg.value >= 1 ether, "invalid-value");
-    require(locks[msg.sender].amount == 0, "stake-already-deposited");
-    locks[msg.sender] = Lock(_amount, _timestamp);
+  function unlockAndWithdraw(address payable _recipient, bytes32 _secretHash) internal {
+    require(locks[_secretHash] > 0, "stake-not-locked");
+    locks[_secretHash] = 0;
+    _recipient.transfer(locks[_secretHash]);
   }
 
-  function withdraw() public {
-    require(locks[msg.sender].timestamp > 0, "stake-not-locked");
-    require(block.timestamp > locks[msg.sender].timestamp, "stake-locked");
-    address(msg.sender).transfer(locks[msg.sender].amount);
-    locks[msg.sender] = Lock(0, 0);
+  function getLockedAmountFor(bytes32 _secretHash) public view returns (uint256) {
+    return locks[_secretHash];
   }
 }

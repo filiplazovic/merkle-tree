@@ -1,12 +1,12 @@
 const MerkleTreeClient = require("../client/merkle");
 const MerkleTree = artifacts.require("MerkleTree");
-const { toHex, soliditySha3, keccak256, padRight, toBN } = web3.utils;
+const { toHex, soliditySha3, padRight, toBN } = web3.utils;
 
 const solidityZeroBytes32 = padRight("0x0", 64);
 
 contract("Merkle Tree", () => {
   it("should correctly calculate edge nodes and root hash in on-chain tree", async () => {
-    const a = keccak256(padRight(toHex("a"), 64));
+    const a = soliditySha3(padRight(toHex("a"), 64));
     const b = soliditySha3(4);
     const ab = soliditySha3(a, b);
 
@@ -49,7 +49,7 @@ contract("Merkle Tree", () => {
 
     const merkleTree = await MerkleTree.new();
 
-    let tx = await merkleTree.insert(toHex("a"), 4);
+    let tx = await merkleTree.insert(a, b);
     let firstLevelHash = tx.logs[0].args.firstLevelHash;
     let realRootHash = await merkleTree.getRootHash();
     let edgeNodes = await merkleTree.getEdgeNodes();
@@ -58,7 +58,7 @@ contract("Merkle Tree", () => {
     assert.equal(realRootHash, ab, "Root hash is not correct after inserts: a, b");
     assert.deepEqual(edgeNodes, [solidityZeroBytes32, ab]);
 
-    tx = await merkleTree.insert(toHex("c"), 7);
+    tx = await merkleTree.insert(c, d);
     firstLevelHash = tx.logs[0].args.firstLevelHash;
     realRootHash = await merkleTree.getRootHash();
     edgeNodes = await merkleTree.getEdgeNodes();
@@ -67,7 +67,7 @@ contract("Merkle Tree", () => {
     assert.equal(realRootHash, abcd, "Root hash is not correct after inserts: c, d");
     assert.deepEqual(edgeNodes, [solidityZeroBytes32, solidityZeroBytes32, abcd]);
 
-    tx = await merkleTree.insert(toHex("e"), 8);
+    tx = await merkleTree.insert(e, f);
     firstLevelHash = tx.logs[0].args.firstLevelHash;
     realRootHash = await merkleTree.getRootHash();
     edgeNodes = await merkleTree.getEdgeNodes();
@@ -76,7 +76,7 @@ contract("Merkle Tree", () => {
     assert.equal(realRootHash, abcdef, "Root hash is not correct after inserts: e, f");
     assert.deepEqual(edgeNodes, [solidityZeroBytes32, ef, abcd]);
 
-    tx = await merkleTree.insert(toHex("g"), 9);
+    tx = await merkleTree.insert(g, h);
     firstLevelHash = tx.logs[0].args.firstLevelHash;
     realRootHash = await merkleTree.getRootHash();
     edgeNodes = await merkleTree.getEdgeNodes();
@@ -85,7 +85,7 @@ contract("Merkle Tree", () => {
     assert.equal(realRootHash, abcdefgh, "Root hash is not correct after inserts: g, h");
     assert.deepEqual(edgeNodes, [solidityZeroBytes32, solidityZeroBytes32, solidityZeroBytes32, abcdefgh]);
 
-    tx = await merkleTree.insert(toHex("i"), 10);
+    tx = await merkleTree.insert(i, j);
     firstLevelHash = tx.logs[0].args.firstLevelHash;
     realRootHash = await merkleTree.getRootHash();
     edgeNodes = await merkleTree.getEdgeNodes();
@@ -94,7 +94,7 @@ contract("Merkle Tree", () => {
     assert.equal(realRootHash, abcdefghij2, "Root hash is not correct after inserts: i, j");
     assert.deepEqual(edgeNodes, [solidityZeroBytes32, ij, solidityZeroBytes32, abcdefgh]);
 
-    tx = await merkleTree.insert(toHex("k"), 11);
+    tx = await merkleTree.insert(k, l);
     firstLevelHash = tx.logs[0].args.firstLevelHash;
     realRootHash = await merkleTree.getRootHash();
     edgeNodes = await merkleTree.getEdgeNodes();
@@ -108,7 +108,7 @@ contract("Merkle Tree", () => {
     const merkleTree = await MerkleTree.new();
     const merkleTreeClient = new MerkleTreeClient(merkleTree);
 
-    const a = keccak256(padRight(toHex("a"), 64));
+    const a = soliditySha3(padRight(toHex("a"), 64));
     const b = soliditySha3(4);
     const ab = soliditySha3(a, b);
 
@@ -118,8 +118,8 @@ contract("Merkle Tree", () => {
 
     const abcd = soliditySha3(ab, cd);
 
-    await merkleTreeClient.insert("a", 4);
-    await merkleTreeClient.insert("c", 7);
+    await merkleTreeClient.insert("a", 4, true);
+    await merkleTreeClient.insert("c", 7, true);
     await merkleTreeClient.sync();
 
     const realRootHash = await merkleTree.getRootHash();
@@ -130,7 +130,7 @@ contract("Merkle Tree", () => {
     const merkleTree = await MerkleTree.new();
     const merkleTreeClient = new MerkleTreeClient(merkleTree);
 
-    const a = keccak256(padRight(toHex("a"), 64));
+    const a = soliditySha3(padRight(toHex("a"), 64));
     const b = soliditySha3(4);
     const ab = soliditySha3(a, b);
 
@@ -140,13 +140,13 @@ contract("Merkle Tree", () => {
 
     const abcd = soliditySha3(ab, cd);
 
-    await merkleTreeClient.insert("a", 4);
-    await merkleTreeClient.insert("c", 7);
+    await merkleTreeClient.insert("a", 4, true);
+    await merkleTreeClient.insert("c", 7, true);
     await merkleTreeClient.sync();
 
     const realRootHash = await merkleTree.getRootHash();
 
     const siblings = merkleTreeClient.getProof(realRootHash, "a");
-    await merkleTree.verifyProof(realRootHash, toHex("a"), siblings);
+    await merkleTree.verifyProof(realRootHash, a, siblings);
   })
 });

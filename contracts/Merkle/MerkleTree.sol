@@ -12,10 +12,9 @@ contract MerkleTree {
     edgeNodes.push(0x0);
   }
 
-  function insert(bytes32 _value, uint256 _salt) public {
-    bytes32 hashedValue = keccak256(abi.encodePacked(_value));
-    bytes32 hashedSalt = keccak256(abi.encodePacked(_salt));
-    bytes32 firstLevelHash = keccak256(abi.encodePacked(hashedValue, hashedSalt));
+  // used for testing purposes
+  function insert(bytes32 _valueHash, uint256 _saltHash) public {
+    bytes32 firstLevelHash = keccak256(abi.encodePacked(_valueHash, _saltHash));
     nNodes += 2;
 
     bytes32 pairHash = firstLevelHash;
@@ -39,7 +38,31 @@ contract MerkleTree {
     emit TreeUpdated(rootHash, nNodes, firstLevelHash);
   }
 
-  function updateEdges(bytes32 edgeNodeValue) public {
+  function insertFirstLevelHash(bytes32 _firstLevelHash) internal {
+    nNodes += 2;
+
+    bytes32 pairHash = _firstLevelHash;
+    uint256 nextEdgeLevel = getNextEdgeLevel(nNodes);
+    bytes32 newEdge = _firstLevelHash;
+    for (uint256 i = 1; i < edgeNodes.length; i += 1) {
+      bytes32 edgeNode = edgeNodes[i];
+      if (edgeNode == 0x0) {
+        pairHash = keccak256(abi.encodePacked(pairHash));
+      } else {
+        pairHash = keccak256(abi.encodePacked(edgeNode, pairHash));
+      }
+
+      if (i + 1 == nextEdgeLevel) {
+        newEdge = pairHash;
+      }
+    }
+    rootHash = pairHash;
+    updateEdges(newEdge);
+
+    emit TreeUpdated(rootHash, nNodes, _firstLevelHash);
+  }
+
+  function updateEdges(bytes32 edgeNodeValue) private {
     uint256 previousNNodes = nNodes - 2;
 
     uint256 numLevels = edgeNodes.length;
@@ -71,12 +94,12 @@ contract MerkleTree {
     return len;
   }
 
-  function verifyProof(bytes32 _rootHash, bytes32 _value, bytes32[] memory siblings) public {
-    bytes32 derivedRootHash = keccak256(abi.encodePacked(_value));
+  function verifyProof(bytes32 _rootHash, bytes32 _valueHash, bytes32[] memory siblings) public pure {
+    bytes32 derivedRootHash = _valueHash;
     for (uint256 i = 0; i < siblings.length; i += 1) {
       derivedRootHash = keccak256(abi.encodePacked(derivedRootHash, siblings[i]));
     }
-    require(_rootHash == derivedRootHash, "Invalid proof");
+    require(_rootHash == derivedRootHash, "invalid-proof");
   }
 
   function getEdgeNodes() public view returns (bytes32[] memory) {
