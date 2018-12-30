@@ -6,3 +6,5 @@ we are tying them to some secret value that is inside a merkle tree. The leaf no
 and can't be derived from the data that is saved on the chain. User that inserts the value to the tree is the only person
 that knows the real value.
 Solving the problem of one person voting multiple times is not the goal of this repo.
+
+Right now merkle proof is used to proof that the secret is in merkle tree. In order for voting to be anonymous this needs to be replaced with zero knowlage proof.
