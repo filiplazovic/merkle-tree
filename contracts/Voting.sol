@@ -66,6 +66,7 @@ contract Voting is Staking, MerkleTree {
     {
       // Check if proof is valid
       verifyProof(rootHash, _valueHash, _siblings);
+      require(keccak256(abi.encodePacked(_optionIndex)) == _siblings[0], "invalid-option");
       voteCount[_optionIndex] += 1;
       // Withdraw staked amount to the sender of the transaction
       withdraw(msg.sender, keccak256(abi.encodePacked(_valueHash, _siblings[0])));

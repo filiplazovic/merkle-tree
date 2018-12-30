@@ -50,12 +50,12 @@ contract("Voting", () => {
     await voting.startVote(deadline, revealPeriod, numOptions);
 
     const secretValueHash = soliditySha3(padRight(toHex("secret"), 64));
-    const secretSaltHash = soliditySha3(4);
-    await voting.submitSecret(secretValueHash, secretSaltHash, {
+    const optionHash = soliditySha3(4);
+    await voting.submitSecret(secretValueHash, optionHash, {
       value: toWei("1", "ether")
     });
 
-    const firstLevelHash = soliditySha3(secretValueHash, secretSaltHash);
+    const firstLevelHash = soliditySha3(secretValueHash, optionHash);
     const lockedAmount = await voting.getLockedAmountFor(firstLevelHash);
     assert.equal(lockedAmount.toString(), toWei("1", "ether"));
   });
@@ -72,12 +72,12 @@ contract("Voting", () => {
     await voting.startVote(deadline, revealPeriod, numOptions);
 
     const secretValueHash = soliditySha3(padRight(toHex("secret"), 64));
-    const secretSaltHash = soliditySha3(4);
-    await voting.submitSecret(secretValueHash, secretSaltHash, {
+    const optionHash = soliditySha3(4);
+    await voting.submitSecret(secretValueHash, optionHash, {
       value: toWei("1", "ether")
     });
 
-    await checkErrorRevert(voting.submitSecret(secretValueHash, secretSaltHash, {
+    await checkErrorRevert(voting.submitSecret(secretValueHash, optionHash, {
       value: toWei("1", "ether")
     }), "stake-already-deposited");
   });
@@ -86,9 +86,9 @@ contract("Voting", () => {
     const voting = await Voting.new();
 
     const secretValueHash = soliditySha3(padRight(toHex("secret"), 64));
-    const secretSaltHash = soliditySha3(4);
+    const optionHash = soliditySha3(4);
 
-    await checkErrorRevert(voting.submitSecret(secretValueHash, secretSaltHash, {
+    await checkErrorRevert(voting.submitSecret(secretValueHash, optionHash, {
       value: toWei("1", "ether")
     }), "vote-not-running");
   });
@@ -107,8 +107,8 @@ contract("Voting", () => {
     await forwardTime(votePeriod + 1);
 
     const secretValueHash = soliditySha3(padRight(toHex("secret"), 64));
-    const secretSaltHash = soliditySha3(4);
-    await checkErrorRevert(voting.submitSecret(secretValueHash, secretSaltHash, {
+    const optionHash = soliditySha3(4);
+    await checkErrorRevert(voting.submitSecret(secretValueHash, optionHash, {
       value: toWei("1", "ether")
     }), "vote-not-running");
   });
@@ -126,13 +126,14 @@ contract("Voting", () => {
 
     await voting.startVote(deadline, revealPeriod, numOptions);
 
+    const option = 1;
     const secretValueHash = soliditySha3(padRight(toHex("secret"), 64));
-    const secretSaltHash = soliditySha3(4);
-    await voting.submitSecret(secretValueHash, secretSaltHash, {
+    const optionHash = soliditySha3(option);
+    await voting.submitSecret(secretValueHash, optionHash, {
       value: toWei("1", "ether")
     });
 
-    await merkleTreeClient.insert("secret", 4);
+    await merkleTreeClient.insert("secret", option);
     await merkleTreeClient.sync();
 
     await forwardTime(votePeriod + 1);
@@ -140,7 +141,6 @@ contract("Voting", () => {
     const rootHash = await merkleTree.getRootHash();
     const siblings = merkleTreeClient.getProof(rootHash, "secret");
 
-    const option = 1;
     await voting.revealSecret(option, secretValueHash, siblings);
 
     const numberOfVotes = await voting.getNumberOfVotesFor(option);
@@ -160,13 +160,14 @@ contract("Voting", () => {
 
     await voting.startVote(deadline, revealPeriod, numOptions);
 
+    const option = 1;
     const secretValueHash = soliditySha3(padRight(toHex("secret"), 64));
-    const secretSaltHash = soliditySha3(4);
-    await voting.submitSecret(secretValueHash, secretSaltHash, {
+    const optionHash = soliditySha3(option);
+    await voting.submitSecret(secretValueHash, optionHash, {
       value: toWei("1", "ether")
     });
 
-    await merkleTreeClient.insert("secret", 4);
+    await merkleTreeClient.insert("secret", option);
     await merkleTreeClient.sync();
 
     await forwardTime(votePeriod + revealPeriod);
@@ -174,7 +175,6 @@ contract("Voting", () => {
     const rootHash = await merkleTree.getRootHash();
     const siblings = merkleTreeClient.getProof(rootHash, "secret");
 
-    const option = 1;
     await checkErrorRevert(voting.revealSecret(option, toHex("secret"), siblings), "not-in-reveal-period");
 
     const numberOfVotes = await voting.getNumberOfVotesFor(option);
@@ -194,13 +194,14 @@ contract("Voting", () => {
 
     await voting.startVote(deadline, revealPeriod, numOptions);
 
+    const option = 1;
     const secretValueHash = soliditySha3(padRight(toHex("secret"), 64));
-    const secretSaltHash = soliditySha3(4);
-    await voting.submitSecret(secretValueHash, secretSaltHash, {
+    const optionHash = soliditySha3(option);
+    await voting.submitSecret(secretValueHash, optionHash, {
       value: toWei("1", "ether")
     });
 
-    await merkleTreeClient.insert("secret", 4);
+    await merkleTreeClient.insert("secret", option);
     await merkleTreeClient.sync();
 
     await forwardTime(votePeriod + 1);
@@ -208,7 +209,6 @@ contract("Voting", () => {
     const rootHash = await merkleTree.getRootHash();
     const siblings = merkleTreeClient.getProof(rootHash, "secret");
 
-    const option = 1;
     await checkErrorRevert(voting.revealSecret(option, toHex("secret1"), siblings), "invalid-proof");
 
     const numberOfVotes = await voting.getNumberOfVotesFor(option);
