@@ -7,4 +7,4 @@ and can't be derived from the data that is saved on the chain. User that inserts
 that knows the real value.
 Solving the problem of one person voting multiple times is not the goal of this repo.
 
-Right now merkle proof is used to proof that the secret is in merkle tree. In order for voting to be anonymous this needs to be replaced with zero knowlage proof.
+TODO: Right now merkle proof is used to proof that the secret is in merkle tree. In order for voting to be anonymous this needs to be replaced with zero knowlage proof.
