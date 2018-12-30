@@ -123,7 +123,7 @@ contract MerkleTree {
   }
 
   // Information about what level the next edge will be on can be extracted from binary representation of current nNodes,
-  // by calculating the successive number of 0 bytes, starting from the right e.g.:
+  // by calculating the successive number of 0 bits, starting from the right e.g.:
   // 0010 - 1
   // 0100 - 2
   // 0110 - 1
